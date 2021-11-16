@@ -2,7 +2,7 @@
  * API_delay.h
  *
  *  Created on: 9 nov. 2021
- *      Author: Andrea García
+ *      Author: Andrea García & Gonzalo Vila
  */
 
 #ifndef API_DELAY_H_

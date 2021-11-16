@@ -2,7 +2,7 @@
  * API_delay.c
  *
  *  Created on: 9 nov. 2021
- *      Author: Andrea Garcia
+ *      Author: Andrea Garcia & Gonzalo Vila
  */
 
 #include "API_delay.h"
@@ -10,6 +10,7 @@
 void delayInit ( delay_t * delay, tick_t duration)
 {
 	delay->duration = duration;
+	delay->running = 0;
 }
 
 bool_t delayRead ( delay_t * delay)
@@ -25,8 +26,9 @@ bool_t delayRead ( delay_t * delay)
 	{
 		if ((elapsedTimeSinceStartup - delay->startTime) >= delay->duration)
 		{
-			delay->startTime = elapsedTimeSinceStartup; //Finalizado un intervalo de delay, actualizo el startTime para dar comienzo a otro intervalo.
+			delay->startTime = elapsedTimeSinceStartup;
 			isDurationOver = true;
+			delay->running = 0;
 		}
 	}
 	return isDurationOver;

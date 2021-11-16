@@ -76,7 +76,7 @@ int main(void)
 		switch(pb_flag)
 		{
 		case true:
-			BSP_LED_On(LED1);
+			BSP_LED_Toogle(LED1);
 			HAL_Delay(100);
 			BSP_LED_Off(LED1);
 			HAL_Delay(100);
