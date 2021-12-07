@@ -63,6 +63,7 @@ int main(void)
 	while (1)
 	{
 		debounceUpdate();
+		uartReadMsg();
 
 	}
 }

@@ -31,6 +31,7 @@ void mefUpdate()
 	{
 	case UART_stt:
 		uartSendMsg((uint8_t *)stringMsg);
+		uartReadMsg();
 		//		scsFlag = !scsFlag;
 		scsFlag = true;
 		demoState = IO_stt;
@@ -48,7 +49,7 @@ void mefUpdate()
 		demoState = ETH_stt;
 	case ETH_stt:
 		uartSendMsg((uint8_t *)("\r Ethernet verificado \n\r"));
-		break;
+		demoState = UART_stt;
 	}
 	leds();
 }
@@ -58,13 +59,51 @@ void demoSuccess()
 
 	if(scsFlag == true)
 	{
-		memset(stringMsg,"\r Éxito \n\r",strlen(stringMsg));
+		uartSendMsg((uint8_t *)("\r Éxito \n\r"));
 		uartSendMsg((uint8_t *)stringMsg);
 	}
 	else if (scsFlag == false)
 	{
-		memset(stringMsg,"\r Fallo \n\r",strlen(stringMsg));
+		uartSendMsg((uint8_t *)("\r Fallo \n\r"));
 		uartSendMsg((uint8_t *)stringMsg);
+	}
+}
+
+void buttonPressed()
+{
+	mefUpdate();
+	pbFlag = !pbFlag;
+	if(pbFlag == true)
+		{
+			BSP_LED_Off(LED1);
+			BSP_LED_Off(LED2);
+			BSP_LED_Off(LED3);
+			delayInit(&led1Delay,500);
+			delayInit(&led2Delay,500);
+			delayInit(&led3Delay,500);
+
+		}
+	else if (pbFlag == false)
+		{
+			delayInit(&led1Delay,100);
+			delayInit(&led2Delay,500);
+			delayInit(&led3Delay,1000);
+		}
+}
+
+void leds()
+{
+	if (delayRead(&led1Delay))
+	{
+		BSP_LED_Toggle(LED1);
+	}
+	if (delayRead(&led2Delay))
+	{
+		BSP_LED_Toggle(LED2);
+	}
+	if (delayRead(&led3Delay))
+	{
+		BSP_LED_Toggle(LED3);
 	}
 }
 

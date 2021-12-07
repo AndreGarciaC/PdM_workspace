@@ -10,8 +10,13 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "string.h"
+#include <string.h>
 #include "main.h"
+#include "API_debounce.h"
+
+#define DELAY_TIME 100
+
+char ans[];
 
 bool uartInit();
 void uartSendMsg(uint8_t *pstring);

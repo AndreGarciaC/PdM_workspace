@@ -8,7 +8,7 @@
 #include <TESTER_uart.h>
 
 UART_HandleTypeDef UartHandle;
-uint8_t * ans;
+static char answ[];
 
 static void uartPrintConfig(void)
 {
@@ -48,13 +48,12 @@ void uartSendMsg(uint8_t *pstring)
 
 void uartReadMsg()
 {
+
 	if (__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE)!=0)
 	{
-		HAL_UART_Receive(&UartHandle, ans, 0xFF, 0xFFFF);
-		uartSendMsg(ans);
-//		printf("Respuestas: %s", &ans);
-//		__HAL_UART_CLEAR_FLAG(&UartHandle, UART_FLAG_RXNE);
+		HAL_UART_Receive(&UartHandle, (uint8_t *)answ, 0xFF, 0xFFFF);
+		uartSendMsg((uint8_t *)answ);
 	}
-
+//	*answ = 0;
 }
 

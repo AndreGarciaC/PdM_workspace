@@ -17,9 +17,6 @@ static delay_t led2Delay;
 static delay_t led3Delay;
 static bool_t pbFlag;
 
-static uint8_t miString[]  = "\r Cambio de frecuencia a 500ms \n\r";
-static uint8_t miString2[]  = "\r Cambio de frecuencia variable \n\r";
-
 void buttonPressed();
 void buttonReleased();
 void leds();
@@ -101,7 +98,7 @@ void debounceUpdate()
 
 void buttonPressed()
 {
-
+	mefUpdate();
 	pbFlag = !pbFlag;
 	if(pbFlag == true)
 		{
@@ -111,14 +108,13 @@ void buttonPressed()
 			delayInit(&led1Delay,500);
 			delayInit(&led2Delay,500);
 			delayInit(&led3Delay,500);
-			mefUpdate();
+
 		}
 	else if (pbFlag == false)
 		{
 			delayInit(&led1Delay,100);
 			delayInit(&led2Delay,500);
 			delayInit(&led3Delay,1000);
-			uartSendMsg((uint8_t *)miString2);
 		}
 }
 
