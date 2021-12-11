@@ -7,33 +7,27 @@
 
 #include <TESTER_uart.h>
 
-UART_HandleTypeDef UartHandle;
-static char answ[];
+static void uartPrintConfig(void);
+static void Error_Handler(void);
 
-static void uartPrintConfig(void)
+void Uart_Init(void)
 {
-	printf("Velocidad serial: %lu baudios.\n\r",UartHandle.Init.BaudRate);
-	printf("Max longitud de caracteres: %lu .\n\r",UartHandle.Init.WordLength);
-	printf("Bits de parada: %lu .\n\r",UartHandle.Init.StopBits);
-	printf("Bit de paridad: %lu .\n\r",UartHandle.Init.Parity);
-}
-
-bool uartInit()
-{
-	UartHandle.Instance        = USARTx;
-	UartHandle.Init.BaudRate   = 9600;
+	UartHandle.Instance = USARTx;
+	UartHandle.Init.BaudRate = 115200;
 	UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-	UartHandle.Init.StopBits   = UART_STOPBITS_1;
-	UartHandle.Init.Parity     = UART_PARITY_ODD;
-	UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-	UartHandle.Init.Mode       = UART_MODE_TX_RX;
+	UartHandle.Init.StopBits = UART_STOPBITS_1;
+	UartHandle.Init.Parity = UART_PARITY_NONE;
+	UartHandle.Init.Mode = UART_MODE_TX_RX;
+	UartHandle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
 	if (HAL_UART_Init(&UartHandle) != HAL_OK)
 	{
-		return false;
+		Error_Handler();
 	}
-	uartPrintConfig();
-	return true;
+	else
+	{
+		uartPrintConfig();
+	}
 }
 
 void uartSendMsg(uint8_t *pstring)
@@ -46,14 +40,42 @@ void uartSendMsg(uint8_t *pstring)
 	HAL_UART_Transmit(&UartHandle, pstring, count, 0xFFFF);
 }
 
-void uartReadMsg()
+bool uartReadMsgPR310()
 {
-
-	if (__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE)!=0)
+	char value[0xFF];
+	if(__HAL_UART_GET_FLAG(&UartHandle, UART_FLAG_RXNE)>=1)
 	{
-		HAL_UART_Receive(&UartHandle, (uint8_t *)answ, 0xFF, 0xFFFF);
-		uartSendMsg((uint8_t *)answ);
+		HAL_UART_Receive(&UartHandle, (uint8_t *)value, strlen(value),0xFF);
+		uartSendMsg((uint8_t *)value);
+		uartSendMsg((uint8_t *)("\rIngrese 1 o 0\n\r"));
+		if(strcmp (value, "1")==0)
+		{
+			uartSendMsg((uint8_t *)("\r Exito \n\r"));
+			__HAL_UART_CLEAR_FLAG(&UartHandle, UART_FLAG_RXNE);
+			return true;
+		}
+		else if(strcmp (value, "0")==0)
+		{
+			uartSendMsg((uint8_t *)("\r Fallo \n\r"));
+			__HAL_UART_CLEAR_FLAG(&UartHandle, UART_FLAG_RXNE);
+			return false;
+		}
 	}
-//	*answ = 0;
+	return false;
 }
 
+static void uartPrintConfig(void)
+{
+	uartSendMsg((uint8_t *)"UART inicializado\n\r");
+	printf("Velocidad serial: %lu baudios.\n\r",UartHandle.Init.BaudRate);
+}
+
+static void Error_Handler(void)
+{
+	/* Turn LED2 on */
+	BSP_LED_On(LED2);
+	while (1)
+	{
+
+	}
+}

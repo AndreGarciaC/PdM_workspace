@@ -8,26 +8,20 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
+#include <TESTER_debounce.h>
+#include <TESTER_delay.h>
 #include "main.h"
-#include "TESTER_uart.h"
+#include <TESTER_uart.h>
+#include <TESTER_SD.h>
+#include "../FATFS/App/fatfs.h"
 
-#include "API_delay.h"
-#include "API_debounce.h"
-
-/** @addtogroup STM32F4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup UART_Printf
-  * @{
-  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
 /* UART handler declaration */
-UART_HandleTypeDef UartHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 #ifdef __GNUC__
@@ -39,7 +33,6 @@ UART_HandleTypeDef UartHandle;
 #endif /* __GNUC__ */
 static void SystemClock_Config(void);
 static void Error_Handler(void);
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -51,19 +44,18 @@ int main(void)
 {
 	HAL_Init();
 	SystemClock_Config();
-	debounceInit();
+	Uart_Init();
 	ledInit();
+	debounceInit();
+	mefInit();
 
-	if (!uartInit())
-	{
-		Error_Handler();
-	}
+	MX_SPI1_Init();
+	MX_FATFS_Init();
 
 	/* Infinite loop */
 	while (1)
 	{
 		debounceUpdate();
-		uartReadMsg();
 
 	}
 }
@@ -73,15 +65,15 @@ int main(void)
   * @param  None
   * @retval None
   */
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART3 and Loop until the end of transmission */
-  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
-
-
-  return ch;
-}
+//PUTCHAR_PROTOTYPE
+//{
+//  /* Place your implementation of fputc here */
+//  /* e.g. write a character to the USART3 and Loop until the end of transmission */
+//  HAL_UART_Transmit(&UartHandle, (uint8_t *)&ch, 1, 0xFFFF);
+//
+//
+//  return ch;
+//}
 
 /**
   * @brief  System Clock Configuration
@@ -151,6 +143,7 @@ static void SystemClock_Config(void)
     Error_Handler();
   }
 }
+
 /**
   * @brief  This function is executed in case of error occurrence.
   * @param  None
@@ -162,8 +155,16 @@ static void Error_Handler(void)
   BSP_LED_On(LED2);
   while (1)
   {
+
   }
 }
+
+/**
+ * @brief SPI1 Initialization Function
+ * @param None
+ * @retval None
+ */
+
 
 #ifdef  USE_FULL_ASSERT
 /**

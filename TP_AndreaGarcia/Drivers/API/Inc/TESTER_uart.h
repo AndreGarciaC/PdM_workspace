@@ -10,16 +10,17 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
+#include <TESTER_debounce.h>
 #include "main.h"
-#include "API_debounce.h"
 
-#define DELAY_TIME 100
+UART_HandleTypeDef UartHandle;
 
-char ans[];
-
-bool uartInit();
+void Uart_Init(void);
 void uartSendMsg(uint8_t *pstring);
-void uartReadMsg();
+bool uartReadMsgPR310();
+
+char rxBuff[0xFF];
 
 #endif /* API_DELAY_H_ */

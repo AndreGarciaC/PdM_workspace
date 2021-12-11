@@ -242,7 +242,7 @@ typedef enum
 /**
   * @brief  SD Control Interface pins (shield D4)
   */
-#define SD_CS_PIN                                 GPIO_PIN_14
+#define SD_CS_PIN                                 GPIO_PIN_4
 #define SD_CS_GPIO_PORT                           GPIOF
 #define SD_CS_GPIO_CLK_ENABLE()                 __HAL_RCC_GPIOF_CLK_ENABLE()
 #define SD_CS_GPIO_CLK_DISABLE()                __HAL_RCC_GPIOF_CLK_DISABLE()
