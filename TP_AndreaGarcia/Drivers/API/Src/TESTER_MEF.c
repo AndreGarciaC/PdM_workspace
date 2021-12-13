@@ -59,7 +59,7 @@ void mefUpdate()
 		test();
 		demoState = SD_stt;
 	case SD_stt:
-//		SD_Rutine();
+		SD_Rutine();
 		uartSendMsg((uint8_t *)("\r Prueba: Micro SD verificada \n\r"));
 		test();
 		demoState = WIFI_stt;
